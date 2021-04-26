@@ -5,6 +5,11 @@
  */
 package equipo_trabajadorsalud;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import equipo0_dominio.SolicitudExpediente;
+import java.util.Date;
+
 /**
  *
  * @author Alfonso Felix
@@ -12,13 +17,13 @@ package equipo_trabajadorsalud;
 public class MainFrame extends javax.swing.JFrame {
 
     TrabajadorSaludClient gateway;
-    
+
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
         initComponents();
-        gateway=new TrabajadorSaludClient();
+        gateway = new TrabajadorSaludClient();
     }
 
     /**
@@ -31,6 +36,7 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         btnSolicitarExpediente = new javax.swing.JButton();
+        txtNombreMedico = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -46,26 +52,40 @@ public class MainFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(btnSolicitarExpediente)
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(121, 121, 121)
+                        .addComponent(btnSolicitarExpediente))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(130, 130, 130)
+                        .addComponent(txtNombreMedico, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(134, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(120, 120, 120)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(txtNombreMedico, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
                 .addComponent(btnSolicitarExpediente)
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addGap(123, 123, 123))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSolicitarExpedienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarExpedienteActionPerformed
-        gateway.getJsonCitas();
+        SolicitudExpediente solicitud = new SolicitudExpediente(1, txtNombreMedico.getText(), new Date());
+        Gson gson = new GsonBuilder().create();
+        try {
+            System.out.println(gateway.postSolicitudExpediente(gson.toJson(solicitud)));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }//GEN-LAST:event_btnSolicitarExpedienteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSolicitarExpediente;
+    private javax.swing.JTextField txtNombreMedico;
     // End of variables declaration//GEN-END:variables
 }
