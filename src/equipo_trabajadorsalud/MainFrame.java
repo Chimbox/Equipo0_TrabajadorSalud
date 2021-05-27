@@ -5,20 +5,37 @@
  */
 package equipo_trabajadorsalud;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.reflect.TypeToken;
+import equipo0_dominio.Cita;
+import equipo0_dominio.Documento;
+import equipo0_dominio.Expediente;
+import equipo0_dominio.SolicitudExpediente;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Alfonso Felix
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends FmBase {
 
-    TrabajadorSaludClient gateway;
-    
+    private TrabajadorSaludClient gateway;
+    private List<Cita> lstCitasProximas = new ArrayList<>();
+    private Gson gson;
+
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
         initComponents();
-        gateway=new TrabajadorSaludClient();
+        gateway = new TrabajadorSaludClient();
+        gson = new GsonBuilder().create();
     }
 
     /**
@@ -30,42 +47,167 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnSolicitarExpediente = new javax.swing.JButton();
+        btnActualizarCitas = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lstCitas = new javax.swing.JList<>();
+        lblNombreMedico = new javax.swing.JLabel();
+        lblPaciente = new javax.swing.JLabel();
+        lblExpediente = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        lstDocumentos = new javax.swing.JList<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        btnSolicitarExpediente.setText("Solicitar expediente");
-        btnSolicitarExpediente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSolicitarExpedienteActionPerformed(evt);
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
             }
         });
+
+        btnActualizarCitas.setText("Refrescar");
+        btnActualizarCitas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarCitasActionPerformed(evt);
+            }
+        });
+
+        lstCitas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstCitasMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(lstCitas);
+
+        lblNombreMedico.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lblNombreMedico.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        lblPaciente.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        lblPaciente.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        lblExpediente.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lblExpediente.setText("Expediente");
+
+        jScrollPane2.setViewportView(lstDocumentos);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
-                .addComponent(btnSolicitarExpediente)
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(160, 160, 160)
+                        .addComponent(btnActualizarCitas, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblNombreMedico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblPaciente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap())
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(lblExpediente)
+                                .addGap(165, 165, 165))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(66, 66, 66))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addComponent(lblNombreMedico, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnActualizarCitas, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55))
             .addGroup(layout.createSequentialGroup()
-                .addGap(120, 120, 120)
-                .addComponent(btnSolicitarExpediente)
-                .addContainerGap(155, Short.MAX_VALUE))
+                .addGap(21, 21, 21)
+                .addComponent(lblExpediente)
+                .addGap(3, 3, 3)
+                .addComponent(lblPaciente, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2)
+                .addGap(111, 111, 111))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSolicitarExpedienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolicitarExpedienteActionPerformed
-        gateway.getJsonCitas();
-    }//GEN-LAST:event_btnSolicitarExpedienteActionPerformed
+    private void btnActualizarCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarCitasActionPerformed
+        actualizarCitas();
+    }//GEN-LAST:event_btnActualizarCitasActionPerformed
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        lblNombreMedico.setText(getTrabSalud().getNombreCompleto());
+        actualizarCitas();
+    }//GEN-LAST:event_formComponentShown
+
+    private void lstCitasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstCitasMouseClicked
+        if (evt.getClickCount() == 2) {
+            int i = lstCitas.locationToIndex(evt.getPoint());
+
+            Cita cita = lstCitas.getModel().getElementAt(i);
+            Gson gson = new GsonBuilder().create();
+
+            if (!cita.isExpedienteAprobado()) {
+                SolicitudExpediente solicitud = new SolicitudExpediente(cita.getId(), getTrabSalud().getNombreCompleto(), new Date());
+
+                gateway.postSolicitarExpediente(getToken(), gson.toJson(solicitud));
+
+            } else {
+                try {
+                    Expediente expediente = gson.fromJson(gateway.postConsultarExpediente(getToken(), gson.toJson(cita)), Expediente.class);
+                    lblPaciente.setText(expediente.getPaciente().getNombreCompleto());
+                    DefaultListModel<Documento> modelo = new DefaultListModel<>();
+
+                    for (Documento documento : expediente.getDocumentos()) {
+                        modelo.addElement(documento);
+                    }
+
+                    lstDocumentos.setModel(modelo);
+
+                    lstDocumentos.setCellRenderer(new ExpedienteRenderer());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(rootPane, "La solicitud del expediente aún no ha sido aprobada, intente de nuevo más tarde.");
+                }
+            }
+        }
+    }//GEN-LAST:event_lstCitasMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnSolicitarExpediente;
+    private javax.swing.JButton btnActualizarCitas;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel lblExpediente;
+    private javax.swing.JLabel lblNombreMedico;
+    private javax.swing.JLabel lblPaciente;
+    private javax.swing.JList<Cita> lstCitas;
+    private javax.swing.JList<Documento> lstDocumentos;
     // End of variables declaration//GEN-END:variables
+
+    private void actualizarCitas() {
+        String jsonTrabSalud = gson.toJson(getTrabSalud());
+        String jsonCitas = gateway.postConsultarCitas(getToken(), jsonTrabSalud);
+        lstCitasProximas = gson.fromJson(jsonCitas, new TypeToken<List<Cita>>() {
+        }.getType());
+
+        DefaultListModel<Cita> modelo = new DefaultListModel<>();
+
+        for (Cita cita : lstCitasProximas) {
+            modelo.addElement(cita);
+        }
+
+        lstCitas.setModel(modelo);
+
+        lstCitas.setCellRenderer(new PreviaCitaRenderer());
+    }
 }
